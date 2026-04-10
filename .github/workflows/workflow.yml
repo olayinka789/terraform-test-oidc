@@ -29,21 +29,32 @@ jobs:
           terraform_version: 1.8.0
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -input=false
 
       - name: Terraform Format check
         run: terraform fmt
 
       - name: Terraform Validate
-        run: terraform validate
+        run: terraform validate -no-color
 
       - name: Terraform Plan
         id: plan
         run: |
           set -o pipefail
-          terraform plan -no-color -detailed-exitcode | tee tfplan.txt
-          echo "exitcode=$?" >> $GITHUB_OUTPUT
+          set +e
+          terraform plan -no-color -detailed-exitcode 2>&1 | tee tfplan.txt
+          plan_exit_code=${PIPESTATUS[0]}
+          set -e
+          echo "exitcode=$plan_exit_code" >> $GITHUB_OUTPUT
+          exit $plan_exit_code
         continue-on-error: true
+
+      - name: Dump Terraform Plan output on failure
+        if: steps.plan.outcome == 'failure'
+        run: |
+          echo "===== Terraform plan output ====="
+          cat tfplan.txt
+          echo "===== End plan output ====="
 
       - name: Capture Plan Exit Code
         id: check_plan

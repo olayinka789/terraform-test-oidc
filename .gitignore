@@ -7,6 +7,7 @@ crash.log
 
 # Ignore .terraform directory
 .terraform/
+.terraform.lock.hcl
 
 # Ignore sensitive files
 *.tfvars
