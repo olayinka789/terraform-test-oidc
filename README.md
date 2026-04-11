@@ -97,7 +97,7 @@ To prevent "Cross-Repo Impersonation," your IAM Role's Trust Policy **must** res
     {
       "Effect": "Allow",
       "Principal": {
-        "Federated": "arn:aws:iam::332779204286:oidc-provider/token.actions.githubusercontent.com"
+        "Federated": "arn:aws:iam::<ACCOUNT_ID>:oidc-provider/token.actions.githubusercontent.com"
       },
       "Action": "sts:AssumeRoleWithWebIdentity",
       "Condition": {
